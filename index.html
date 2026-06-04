@@ -337,4 +337,80 @@ return;
 
 }
 
-hintUsed o
+hintUsed = true;
+
+alert(
+questions[currentQuestion].hint
+);
+
+}
+
+function fifty(){
+
+if(fiftyUsed){
+
+alert("50:50 already used!");
+
+return;
+
+}
+
+fiftyUsed = true;
+
+alert(
+"One possible answer is: " +
+questions[currentQuestion].answer
+);
+
+}
+
+function skipQ(){
+
+if(skipUsed){
+
+alert("Skip already used!");
+
+return;
+
+}
+
+skipUsed = true;
+
+currentQuestion++;
+
+showQuestion();
+
+}
+
+function gameOver(){
+
+document.getElementById("game").innerHTML =
+
+"<h1>GAME OVER</h1>" +
+
+"<h2>Your Score: " +
+score +
+"</h2>" +
+
+"<button class='startBtn' onclick='location.reload()'>Play Again</button>";
+
+}
+
+function winGame(){
+
+document.getElementById("game").classList.add("hidden");
+
+document.getElementById("winScreen").classList.remove("hidden");
+
+document.getElementById("finalScore").innerHTML =
+score + " Points";
+
+document.getElementById("progress").style.width =
+"100%";
+
+}
+
+</script>
+
+</body>
+</html>

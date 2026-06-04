@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question King V3</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#001d3d,#003566,#0a9396);
+min-height:100vh;
+display:flex;
+justify-content:center;
+color:white;
+}
+
+.phone{
+width:100%;
+max-width:430px;
+min-height:100vh;
+padding:15px;
+}
+
+.card{
+background:rgba(255,255,255,.1);
+backdrop-filter:blur(10px);
+border-radius:20px;
+padding:20px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+.avatar{
+width:120px;
+height:120px;
+margin:auto;
+border-radius:50%;
+background:linear-gradient(#222,#444);
+border:4px solid gold;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:60px;
+}
+
+h1{
+text-align:center;
+margin-top:10px;
+color:gold;
+}
+
+.speech{
+background:white;
+color:black;
+padding:12px;
+border-radius:15px;
+margin-top:15px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.startBtn{
+background:gold;
+color:black;
+}
+
+.hidden{
+display:none;
+}
+
+#progressBar{
+width:100%;
+height:18px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+margin-top:15px;
+}
+
+#progress{
+height:100%;
+width:0%;
+background:lime;
+}
+
+.option{
+background:#3a86ff;
+color:white;
+}
+
+.life{
+background:#fb8500;
+color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<div id="intro" class="card">
+
+<div class="avatar">QK</div>
+
+<h1>QUESTION KING</h1>
+
+<div class="speech">
+Welcome challenger! Beat all 5 rounds and become the Quiz King!
+</div>
+
+<button class="startBtn" onclick="startGame()">
+START GAME
+</button>
+
+</div>
+
+<div id="game" class="card hidden">
+
+<div class="avatar">QK</div>
+
+<div id="speech" class="speech">
+Let's begin!
+</div>
+
+<h3 id="points">
+Points: 0
+</h3>
+
+<div id="progressBar">
+<div id="progress"></div>
+</div>
+
+<div style="margin-top:15px">
+
+<button class="life" onclick="hint()">
+Hint
+</button>
+
+<button class="life" onclick="fifty()">
+50 : 50
+</button>
+
+<button class="life" onclick="skipQ()">
+Skip
+</button>
+
+</div>
+
+<h2 id="round" style="margin-top:20px;"></h2>
+
+<h3 id="question" style="margin-top:15px;"></h3>
+
+<div id="options"></div>
+
+</div>
+<div id="winScreen" class="card hidden">
+
+<h1>QUIZ KING</h1>
+
+<div class="speech">
+Question King says:
+Outstanding performance!
+</div>
+
+<h2 id="finalScore">
+0 Points
+</h2>
+
+<button class="startBtn" onclick="location.reload()">
+Play Again
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"23 + 44 = ?",
+options:["65","66","67","68"],
+answer:"67",
+hint:"Think carefully."
+},
+
+{
+question:"12 × 8 = ?",
+options:["96","88","84","108"],
+answer:"96",
+hint:"12 groups of 8."
+},
+
+{
+question:"Square root of 625 ?",
+options:["20","25","30","35"],
+answer:"25",
+hint:"25 × 25"
+},
+
+{
+question:"Largest ocean in the world ?",
+options:["Indian","Atlantic","Pacific","Arctic"],
+answer:"Pacific",
+hint:"Starts with P"
+},
+
+{
+question:"How many continents are there ?",
+options:["5","6","7","8"],
+answer:"7",
+hint:"More than 6"
+}
+
+];
+
+const rewards = [
+100,
+500,
+2000,
+10000,
+100000
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+let hintUsed = false;
+let skipUsed = false;
+let fiftyUsed = false;
+function startGame(){
+
+document.getElementById("intro").classList.add("hidden");
+
+document.getElementById("game").classList.remove("hidden");
+
+showQuestion();
+
+}
+
+function showQuestion(){
+
+if(currentQuestion >= questions.length){
+
+winGame();
+
+return;
+
+}
+
+document.getElementById("round").innerHTML =
+"Round " + (currentQuestion+1) + " of 5";
+
+document.getElementById("question").innerHTML =
+questions[currentQuestion].question;
+
+document.getElementById("progress").style.width =
+(currentQuestion/questions.length)*100 + "%";
+
+let optionsDiv =
+document.getElementById("options");
+
+optionsDiv.innerHTML = "";
+
+questions[currentQuestion].options.forEach(function(option){
+
+let button =
+document.createElement("button");
+
+button.className = "option";
+
+button.innerHTML = option;
+
+button.onclick = function(){
+
+checkAnswer(option);
+
+};
+
+optionsDiv.appendChild(button);
+
+});
+
+}
+
+function checkAnswer(selected){
+
+if(selected ==
+questions[currentQuestion].answer){
+
+score += rewards[currentQuestion];
+
+document.getElementById("points").innerHTML =
+"Points: " + score;
+
+document.getElementById("speech").innerHTML =
+"Excellent Answer!";
+currentQuestion++;
+
+showQuestion();
+
+}
+
+else{
+
+gameOver();
+
+}
+
+}
+function hint(){
+
+if(hintUsed){
+
+alert("Hint already used!");
+
+return;
+
+}
+
+hintUsed o
